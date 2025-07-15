@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Dinero - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3182ce;
+      --primary-dark: #2563eb;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --gray-bg: #f7fafd;
+      --gray-card: #fff;
+      --gray-border: #e5e7eb;
+      --text-main: #22223b;
+      --text-muted: #6b7280;
+      --shadow: 0 4px 24px rgba(0,0,0,0.07);
+      --blue: #2563eb;
+    }
+    html, body {
+      font-family: 'DM Sans', Arial, sans-serif;
+      background: var(--gray-bg);
+      margin: 0;
+      padding: 0;
+      color: var(--text-main);
+    }
+    .header-logo {
+      width: 100%;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+    .header-logo img {
+      max-width: 180px;
+      height: auto;
+      display: block;
+    }
+    .dashboard {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 1.5rem 0 2rem 0;
+    }
+    .user-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .user-header .icon {
+      font-size: 2rem;
+      margin-right: 0.5rem;
+    }
+    .user-header .info {
+      flex: 1;
+    }
+    .user-header .info h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0 0 0.2rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .user-header .info p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+    .user-header .email {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+    .balance-card {
+      background: linear-gradient(90deg, #6a82fb 0%, #fc5c7d 100%);
+      color: #fff;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 2rem 1.5rem 1.5rem 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .balance-card h2 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin: 0 0 0.5rem 0;
+      letter-spacing: 1px;
+      opacity: 0.95;
+    }
+    .balance-card .amount {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+    .balance-card .divider {
+      width: 40px;
+      height: 3px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 2px;
+      margin: 0.5rem auto 0 auto;
+    }
+    .actions {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      justify-content: center;
+    }
+    .action-btn {
+      flex: 1;
+      padding: 1.1rem 0;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform 0.1s;
+    }
+    .action-btn.ingreso {
+      background: var(--success);
+    }
+    .action-btn.gasto {
+      background: var(--danger);
+    }
+    .action-btn:active {
+      transform: scale(0.97);
+    }
+    .card {
+      background: var(--gray-card);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 1.5rem 1.2rem;
+      margin-bottom: 1.2rem;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .metrics {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .metric-card {
+      flex: 1;
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 1rem 0.5rem;
+      text-align: center;
+    }
+    .metric-title {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+    }
+    .metric-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .metric-value.ingreso {
+      color: var(--success);
+    }
+    .metric-value.gasto {
+      color: var(--danger);
+    }
+    .metric-value.promedio {
+      color: var(--blue);
+    }
+    .recent-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .recent-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 0.2rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .recent-item:last-child {
+      border-bottom: none;
+    }
+    .recent-icon {
+      font-size: 1.5rem;
+      width: 32px;
+      text-align: center;
+    }
+    .recent-info {
+      flex: 1;
+    }
+    .recent-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.2rem;
+    }
+    .recent-date {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+    .recent-amount {
+      font-weight: 700;
+      font-size: 1.1rem;
+      min-width: 80px;
+      text-align: right;
+    }
+    .recent-amount.ingreso {
+      color: var(--success);
+    }
+    .recent-amount.gasto {
+      color: var(--danger);
+    }
+    /* Modal Styles */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.3);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 2rem 2.5rem;
+      border-radius: 16px;
+      min-width: 320px;
+      max-width: 600px;
+      box-shadow: var(--shadow);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .modal-close {
+      position: absolute;
+      top: 1.2rem;
+      right: 1.5rem;
+      font-size: 1.3rem;
+      color: #888;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      width: 100%;
+      text-align: left;
+    }
+    .modal-amount {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin: 0.5rem 0 1.2rem 0;
+      width: 100%;
+      text-align: center;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--danger);
+    }
+    .modal-amount.income {
+      color: var(--success);
+    }
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.7rem;
+      width: 100%;
+      margin-bottom: 1rem;
+      justify-items: center;
+    }
+    .category-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 0.8rem 0.2rem;
+      font-size: 16px;
+      cursor: pointer;
+      min-height: 70px;
+      transition: border 0.15s, background 0.15s;
+      outline: none;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      width: 95%;
+      max-width: 180px;
+      margin: 0 auto;
+    }
+    .category-card.selected {
+      border: 2px solid var(--primary);
+      background: #e0e7ff;
+    }
+    .category-emoji {
+      font-size: 1.7rem;
+      margin-bottom: 4px;
+      display: block;
+      text-align: center;
+    }
+    .category-card span:last-child {
+      font-size: 15px;
+      font-weight: 500;
+      color: #22223b;
+      text-align: center;
+      line-height: 1.2;
+      display: block;
+    }
+    .modal-desc {
+      width: 100%;
+      margin-bottom: 1.2rem;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+      color: var(--text-main);
+      background: #f7fafd;
+    }
+    .modal-submit {
+      width: 100%;
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.7rem;
+      transition: background 0.15s;
+    }
+    .modal-submit.income {
+      background: var(--success);
+    }
+    @media (max-width: 600px) {
+      .modal-content {
+        min-width: 0;
+        width: 98vw;
+        padding: 1.2rem 0.5rem;
+      }
+      .category-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .category-card {
+        font-size: 15px;
+        min-height: 60px;
+        padding: 0.6rem 0.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header-logo">
+    <img src="https://ik.imagekit.io/volobillion/UWallet.svg?updatedAt=1752374198446" alt="Logo" />
+  </div>
+  <div class="dashboard">
+    <div class="user-header">
+      <span class="icon">👋🏻</span>
+      <div class="info">
+        <h1>¡Hola!</h1>
+      </div>
+      <span class="email" id="current-date"></span>
+    </div>
+    <div class="balance-card">
+      <h2>You've</h2>
+      <div class="amount" id="balance">$0</div>
+      <div class="divider"></div>
+    </div>
+    <div class="actions">
+      <button class="action-btn ingreso" onclick="openIncomeModal()">💰 Ingreso</button>
+      <button class="action-btn gasto" onclick="openExpenseModal()">📉 Gasto</button>
+    </div>
+    <!-- Gráfico de métricas en tiempo real -->
+    <div class="card" id="chartCard" style="margin-top:16px;">
+      <canvas id="metricsChart" style="width:100%; height:180px;"></canvas>
+    </div>
+    <!-- Metrics Section -->
+    <div class="card">
+      <div class="card-title">📊 Métricas</div>
+      <div class="metrics">
+        <div class="metric-card">
+          <div class="metric-title">Ingresos Totales</div>
+          <div class="metric-value ingreso" id="metricIncome">$0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Gastos Totales</div>
+          <div class="metric-value gasto" id="metricExpense">$0</div>
+        </div>
+      </div>
+      <div class="metric-card" style="margin-top:0.5rem;">
+        <div class="metric-title">Gasto (últimos 30 días)</div>
+        <div class="metric-value promedio" id="metricAvg">$0</div>
+      </div>
+    </div>
+    <!-- Recent Transactions -->
+    <div class="card">
+      <div class="card-title">🧾 Transacciones Recientes</div>
+      <ul class="recent-list" id="recentList"></ul>
+    </div>
+  </div>
+
+  <!-- Expense Modal -->
+  <div class="modal-bg" id="expenseModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeExpenseModal()">&times;</button>
+      <div class="modal-title" style="color:var(--danger);">Agregar Gasto</div>
+      <form id="expenseForm" autocomplete="off">
+        <input type="number" id="expenseAmount" class="modal-amount" placeholder="$0" min="0.01" step="0.01" required />
+        <div style="width:100%;margin-bottom:0.7rem;font-weight:600;">Categoría</div>
+        <div class="category-grid" id="expenseCategoryGrid"></div>
+        <input type="text" id="expenseDesc" class="modal-desc" placeholder="Descripción (opcional)" />
+        <button type="submit" class="modal-submit">Agregar Gasto</button>
+      </form>
+    </div>
+  </div>
+  <!-- Income Modal -->
+  <div class="modal-bg" id="incomeModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeIncomeModal()">&times;</button>
+      <div class="modal-title" style="color:var(--success);">Agregar Ingreso</div>
+      <form id="incomeForm" autocomplete="off">
+        <input type="number" id="incomeAmount" class="modal-amount income" placeholder="$0" min="0.01" step="0.01" required />
+        <input type="text" id="incomeDesc" class="modal-desc" placeholder="Descripción (opcional)" />
+        <button type="submit" class="modal-submit income">Agregar Ingreso</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // --- Fixed Categories with Emojis ---
+    const CATEGORIES = [
+      { name: 'Comida', emoji: '🍽️' },
+      { name: 'Transporte', emoji: '🚗' },
+      { name: 'Entretenimiento', emoji: '🎬' },
+      { name: 'Compras', emoji: '🛍️' },
+      { name: 'Servicios', emoji: '💡' },
+      { name: 'Salud', emoji: '🩺' },
+      { name: 'Educación', emoji: '📚' },
+      { name: 'Otros', emoji: '🎉' },
+      { name: 'Diversión', emoji: '😄' }
+    ];
+
+    // --- Demo Data ---
+    let transactions = [
+      { date: '2024-07-11T12:29', type: 'expense', amount: 2500, category: 'Entretenimiento', description: 'Cine', icon: '🎬' },
+      { date: '2024-07-11T12:29', type: 'income', amount: 20, category: 'Ingreso', description: 'Venta', icon: '💰' },
+      { date: '2024-07-06T20:57', type: 'expense', amount: 12500, category: 'Servicios', description: 'Fee LLC', icon: '💡' },
+      { date: '2024-07-06T20:56', type: 'income', amount: 35764, category: 'Ingreso', description: 'Salario', icon: '💰' },
+      { date: '2024-07-06T20:56', type: 'income', amount: 290, category: 'Ingreso', description: 'Extra', icon: '💰' },
+    ];
+
+    // --- Modal Logic ---
+    let selectedExpenseCategory = CATEGORIES[0].name;
+    function openExpenseModal() {
+      document.getElementById('expenseModal').style.display = 'flex';
+      renderExpenseCategoryGrid();
+      document.getElementById('expenseAmount').value = '';
+      document.getElementById('expenseDesc').value = '';
+      selectedExpenseCategory = CATEGORIES[0].name;
+      highlightSelectedCategory();
+    }
+    function closeExpenseModal() {
+      document.getElementById('expenseModal').style.display = 'none';
+    }
+    function openIncomeModal() {
+      document.getElementById('incomeModal').style.display = 'flex';
+      document.getElementById('incomeAmount').value = '';
+      document.getElementById('incomeDesc').value = '';
+    }
+    function closeIncomeModal() {
+      document.getElementById('incomeModal').style.display = 'none';
+    }
+    window.onclick = function(event) {
+      if (event.target === document.getElementById('expenseModal')) closeExpenseModal();
+      if (event.target === document.getElementById('incomeModal')) closeIncomeModal();
+    };
+
+    // --- Render Category Grid for Expense Modal ---
+    function renderExpenseCategoryGrid() {
+      const grid = document.getElementById('expenseCategoryGrid');
+      grid.innerHTML = '';
+      CATEGORIES.forEach(cat => {
+        const card = document.createElement('div');
+        card.className = 'category-card' + (cat.name === selectedExpenseCategory ? ' selected' : '');
+        card.innerHTML = `<span class="category-emoji">${cat.emoji}</span> <span>${cat.name}</span>`;
+        card.onclick = () => {
+          selectedExpenseCategory = cat.name;
+          highlightSelectedCategory();
+        };
+        grid.appendChild(card);
+      });
+    }
+    function highlightSelectedCategory() {
+      const cards = document.querySelectorAll('.category-card');
+      cards.forEach(card => {
+        if (card.textContent.trim().endsWith(selectedExpenseCategory)) {
+          card.classList.add('selected');
+        } else {
+          card.classList.remove('selected');
+        }
+      });
+    }
+
+    // --- Expense Form Submission ---
+    document.getElementById('expenseForm').onsubmit = function(e) {
+      e.preventDefault();
+      const amount = document.getElementById('expenseAmount').value;
+      const description = document.getElementById('expenseDesc').value;
+      const catObj = CATEGORIES.find(c => c.name === selectedExpenseCategory);
+      const icon = catObj ? catObj.emoji : '💸';
+      const now = new Date();
+      const date = now.toISOString().slice(0,16); // yyyy-mm-ddThh:mm
+      transactions.push({
+        type: 'expense',
+        amount,
+        category: selectedExpenseCategory,
+        description,
+        date,
+        icon
+      });
+      closeExpenseModal();
+      updateAll();
+    };
+
+    // --- Income Form Submission ---
+    document.getElementById('incomeForm').onsubmit = function(e) {
+      e.preventDefault();
+      const amount = document.getElementById('incomeAmount').value;
+      const description = document.getElementById('incomeDesc').value;
+      const now = new Date();
+      const date = now.toISOString().slice(0,16);
+      transactions.push({
+        type: 'income',
+        amount,
+        category: 'Ingreso',
+        description,
+        date,
+        icon: '💰'
+      });
+      closeIncomeModal();
+      updateAll();
+    };
+
+    // --- Metrics Section ---
+    function renderMetrics() {
+      const now = new Date();
+      const last30 = transactions.filter(t => {
+        const tDate = new Date(t.date);
+        return (now - tDate) / (1000 * 60 * 60 * 24) <= 30;
+      });
+      let totalIncome = 0, totalExpense = 0;
+      last30.forEach(t => {
+        if (t.type === 'income') totalIncome += Number(t.amount);
+        else totalExpense += Number(t.amount);
+      });
+      // Average daily expense
+      const days = 30;
+      const avgExpense = totalExpense / days;
+      document.getElementById('metricIncome').textContent = `$${totalIncome.toLocaleString('es-MX')}`;
+      document.getElementById('metricExpense').textContent = `$${totalExpense.toLocaleString('es-MX')}`;
+      document.getElementById('metricAvg').textContent = `$${Math.round(avgExpense).toLocaleString('es-MX')}`;
+    }
+
+    // --- Recent Transactions ---
+    function renderRecent() {
+      const recentList = document.getElementById('recentList');
+      recentList.innerHTML = '';
+      // Sort by date descending
+      const sorted = transactions.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+      sorted.slice(0, 8).forEach(tx => {
+        const li = document.createElement('li');
+        li.className = 'recent-item';
+        const catObj = CATEGORIES.find(c => c.name === tx.category);
+        li.innerHTML = `
+          <span class="recent-icon">${catObj ? catObj.emoji : (tx.type === 'income' ? '💰' : '💸')}</span>
+          <div class="recent-info">
+            <div class="recent-title">${tx.category || ''}</div>
+            <div class="recent-date">${formatDateTime(tx.date)}</div>
+          </div>
+          <div class="recent-amount ${tx.type === 'income' ? 'ingreso' : 'gasto'}">
+            ${tx.type === 'income' ? '+' : '-'}$${Number(tx.amount).toLocaleString('es-MX')}
+          </div>
+        `;
+        recentList.appendChild(li);
+      });
+    }
+
+    // --- Balance ---
+    function renderBalance() {
+      let balance = 0;
+      transactions.forEach(t => {
+        balance += t.type === 'income' ? Number(t.amount) : -Number(t.amount);
+      });
+      document.getElementById('balance').textContent = `$${balance.toLocaleString('es-MX')}`;
+    }
+
+    // --- Chart.js Metrics Chart ---
+    function renderMetricsChart() {
+      if (transactions.length === 0) {
+        const ctx = document.getElementById('metricsChart').getContext('2d');
+        if (window.metricsChartInstance) window.metricsChartInstance.destroy();
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        return;
+      }
+      // Agrupa transacciones por día y suma ingresos/gastos acumulados (balance actual)
+      const days = 14; // últimos 14 días
+      const now = new Date();
+      const dataMap = {};
+      let minDate = new Date(now);
+      transactions.forEach(t => {
+        const d = new Date(t.date);
+        if (d < minDate) minDate = d;
+      });
+      // Asegura que el rango cubra desde el primer movimiento si hay menos de 14 días
+      const start = new Date(Math.min(minDate, new Date(now - (days-1)*24*60*60*1000)));
+      for (let i = 0; i < days; i++) {
+        const d = new Date(start);
+        d.setDate(start.getDate() + i);
+        const key = d.toISOString().slice(0, 10);
+        dataMap[key] = 0;
+      }
+      transactions.forEach(t => {
+        const d = t.date.slice(0, 10);
+        if (dataMap[d] !== undefined) {
+          dataMap[d] += t.type === 'income' ? Number(t.amount) : -Number(t.amount);
+        }
+      });
+      let running = 0;
+      const chartData = Object.entries(dataMap).map(([date, val]) => {
+        running += val;
+        return { date, value: running };
+      });
+      const ctx = document.getElementById('metricsChart').getContext('2d');
+      if (window.metricsChartInstance) window.metricsChartInstance.destroy();
+      const gradient = ctx.createLinearGradient(0, 0, 0, 180);
+      gradient.addColorStop(0, '#6366F1BB');
+      gradient.addColorStop(1, '#6366F100');
+      window.metricsChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: chartData.map(d => d.date.slice(5)),
+          datasets: [{
+            label: 'Balance',
+            data: chartData.map(d => d.value),
+            borderColor: '#6366F1',
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 0,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true }
+          },
+          scales: {
+            x: { display: false },
+            y: { display: false }
+          }
+        }
+      });
+    }
+
+    // --- Utility Functions ---
+    function formatDateTime(dt) {
+      const d = new Date(dt);
+      return d.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: '2-digit' }) + ', ' + d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // --- Update All Sections ---
+    function updateAll() {
+      renderBalance();
+      renderMetrics();
+      renderRecent();
+      renderMetricsChart();
+    }
+
+    // --- Initial Render ---
+    updateAll();
+
+    // Mostrar la fecha actual en español
+    const dateEl = document.getElementById('current-date');
+    const now = new Date();
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    dateEl.textContent = now.toLocaleDateString('es-MX', options);
+  </script>
+</body>
+</html> 
